@@ -15,9 +15,11 @@ const Button = ({ text, onClick }) => {
 
 const Statistic = ({ text, value }) => {
   return (
-    <p>
-      {text} {value}
-    </p>
+    <tr>
+      <td>
+        {text} {value}
+      </td>
+    </tr>
   );
 };
 
@@ -25,12 +27,16 @@ const Statistics = ({ good, neutral, bad, total, average, positiveScore }) => {
   if (total > 0) {
     return (
       <div>
-        <Statistic text="good" value={good} />
-        <Statistic text="neutral" value={neutral} />
-        <Statistic text="bad" value={bad} />
-        <Statistic text="all" value={total} />
-        <Statistic text="average" value={average} />
-        <Statistic text="positive" value={positiveScore} />
+        <table>
+          <tbody>
+            <Statistic text="good" value={good} />
+            <Statistic text="neutral" value={neutral} />
+            <Statistic text="bad" value={bad} />
+            <Statistic text="all" value={total} />
+            <Statistic text="average" value={average} />
+            <Statistic text="positive" value={positiveScore} />
+          </tbody>
+        </table>
       </div>
     );
   }
