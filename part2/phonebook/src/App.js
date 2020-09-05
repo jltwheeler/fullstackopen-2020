@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 
+import personService from "./services/persons";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
@@ -13,9 +13,7 @@ const App = () => {
   const [showAll, setShowAll] = useState(true);
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
-    });
+    personService.getAll().then((data) => setPersons(data));
   }, []);
 
   const peopleToShow = showAll
@@ -38,13 +36,48 @@ const App = () => {
     setNewNumber(event.target.value);
   };
 
+  const handleDeleteClick = (id, name) => {
+    const result = window.confirm(`Delete ${name} ?`);
+
+    if (result) {
+      personService
+        .deletePerson(id)
+        .then((resp) =>
+          setPersons(persons.filter((person) => person.id != id))
+        );
+    }
+  };
+
+  const getPersonId = (name) => {
+    return persons.filter((person) => person.name === name)[0].id;
+  };
+
   const addPerson = (event) => {
     event.preventDefault();
 
     if (persons.map((person) => person.name).includes(newName)) {
-      alert(`${newName} is already added to phonebook`);
+      const result = window.confirm(
+        `${newName} is already added to phonebook, replace the old number with a new one?`
+      );
+
+      if (result) {
+        const updatedPerson = { name: newName, number: newNumber };
+        const id = getPersonId(newName);
+        personService
+          .update(id, updatedPerson)
+          .then((data) =>
+            setPersons(
+              persons.map((person) => (person.id !== data.id ? person : data))
+            )
+          );
+      }
     } else {
-      setPersons(persons.concat({ name: newName, number: newNumber }));
+      const newPerson = { name: newName, number: newNumber };
+
+      personService
+        .create(newPerson)
+        .then((data) => setPersons(persons.concat(data)));
+
       setNewName("");
       setNewNumber("");
     }
@@ -63,7 +96,7 @@ const App = () => {
         onNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons persons={peopleToShow} />
+      <Persons persons={peopleToShow} onDeleteClick={handleDeleteClick} />
     </div>
   );
 };
