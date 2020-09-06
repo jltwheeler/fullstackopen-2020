@@ -4,6 +4,7 @@ import personService from "./services/persons";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import Notification from "./components/Notifications";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,6 +12,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [searchText, setSearchText] = useState("");
   const [showAll, setShowAll] = useState(true);
+  const [alert, setAlert] = useState({ message: null, type: null });
 
   useEffect(() => {
     personService.getAll().then((data) => setPersons(data));
@@ -43,7 +45,7 @@ const App = () => {
       personService
         .deletePerson(id)
         .then((resp) =>
-          setPersons(persons.filter((person) => person.id != id))
+          setPersons(persons.filter((person) => person.id !== id))
         );
     }
   };
@@ -69,7 +71,17 @@ const App = () => {
             setPersons(
               persons.map((person) => (person.id !== data.id ? person : data))
             )
-          );
+          )
+          .catch((error) => {
+            setAlert({
+              message: `Information of ${newName} has already been removed from server`,
+              type: "error",
+            });
+            setPersons(persons.filter((person) => person.id !== id));
+            setTimeout(() => {
+              setAlert({ message: null, type: null });
+            }, 2000);
+          });
       }
     } else {
       const newPerson = { name: newName, number: newNumber };
@@ -77,6 +89,12 @@ const App = () => {
       personService
         .create(newPerson)
         .then((data) => setPersons(persons.concat(data)));
+
+      setAlert({ message: `Added ${newName}`, type: "success" });
+
+      setTimeout(() => {
+        setAlert({ message: null, type: null });
+      }, 2000);
 
       setNewName("");
       setNewNumber("");
@@ -86,6 +104,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification alert={alert} />
       <Filter onTextChange={handleSearchChange} searchText={searchText} />
       <h2>add a new</h2>
       <PersonForm
