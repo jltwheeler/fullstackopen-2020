@@ -4,7 +4,6 @@ const morgan = require("morgan");
 const cors = require("cors");
 
 const Person = require("./models/person");
-const { request, response } = require("express");
 
 morgan.token("person", (req) => {
   return JSON.stringify(req.body);
@@ -67,17 +66,13 @@ app.post("/api/persons", (req, res) => {
 
 app.put("/api/persons/:id", (req, res, next) => {
   const body = req.body;
-  const person = new Person({
-    _id: req.params.id,
+  const person = {
     name: body.name,
     number: body.number,
-  });
-
-  console.log(req.params.id);
+  };
 
   Person.findByIdAndUpdate(req.params.id, person, {
     new: true,
-    useFindAndModify: false,
   })
     .then((updatedPerson) => {
       res.status(200).json(updatedPerson);
