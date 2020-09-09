@@ -11,7 +11,7 @@ is **10/01/2021**.
 | 0    | [Fundamentals of Web apps](https://fullstackopen.com/en/part0)                                     | 2.25  |
 | 1    | [Introduction to React](https://fullstackopen.com/en/part1)                                        | 4.00  |
 | 2    | [Communicating with server](https://fullstackopen.com/en/part2)                                    | 6.00  |
-| 3    | [Programming a server with NodeJS and Express](https://fullstackopen.com/en/part3)                 | n/a   |
+| 3    | [Programming a server with NodeJS and Express](https://fullstackopen.com/en/part3)                 | 5.50  |
 | 4    | [Testing Express servers, user administration](https://fullstackopen.com/en/part4)                 | n/a   |
 | 5    | [Testing React apps](https://fullstackopen.com/en/part5)                                           | n/a   |
 | 6    | [State management with Redux](https://fullstackopen.com/en/part6)                                  | n/a   |
