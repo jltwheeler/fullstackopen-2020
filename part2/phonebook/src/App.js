@@ -73,11 +73,15 @@ const App = () => {
             )
           )
           .catch((error) => {
-            setAlert({
-              message: `Information of ${newName} has already been removed from server`,
-              type: "error",
-            });
-            setPersons(persons.filter((person) => person.id !== id));
+            if (error.response.status === 400) {
+              setAlert({ message: error.response.data.error, type: "error" });
+            } else {
+              setAlert({
+                message: `Information of ${newName} has already been removed from server`,
+                type: "error",
+              });
+              setPersons(persons.filter((person) => person.id !== id));
+            }
             setTimeout(() => {
               setAlert({ message: null, type: null });
             }, 2000);
@@ -88,9 +92,13 @@ const App = () => {
 
       personService
         .create(newPerson)
-        .then((data) => setPersons(persons.concat(data)));
-
-      setAlert({ message: `Added ${newName}`, type: "success" });
+        .then((data) => {
+          setPersons(persons.concat(data));
+          setAlert({ message: `Added ${newName}`, type: "success" });
+        })
+        .catch((err) => {
+          setAlert({ message: err.response.data.error, type: "error" });
+        });
 
       setTimeout(() => {
         setAlert({ message: null, type: null });
