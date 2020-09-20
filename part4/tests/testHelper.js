@@ -4,12 +4,14 @@ const initialBlogs = [
     author: "Jeff Winger",
     url: "https://www.blog.com/jeffwinger",
     likes: 27,
+    user: "",
   },
   {
     title: "test blog 2",
     author: "Donald Glover",
     url: "https://www.blog.com/iamdonald",
     likes: 58,
+    user: "",
   },
 ];
 
