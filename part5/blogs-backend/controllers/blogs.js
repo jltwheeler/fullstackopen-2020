@@ -56,6 +56,9 @@ router.delete("/:id", async (request, response) => {
 
 router.put("/", async (request, response) => {
   const blog = request.body;
+  const userId = blog.user.id;
+
+  blog.user = await User.findById(userId);
   const updatedBlog = await Blog.findByIdAndUpdate(blog.id, blog, {
     new: true,
     runValidators: true,
