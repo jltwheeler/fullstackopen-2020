@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import blogService from "../services/blogs";
 
-const Blog = ({ blog, blogs, updateBlogs, user }) => {
+const Blog = ({ blog, user, addLike, deleteBlog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -12,52 +11,60 @@ const Blog = ({ blog, blogs, updateBlogs, user }) => {
 
   const [visible, setVisible] = useState(false);
 
-  const displayFull = { display: visible ? "" : "none" };
   const buttonLabel = visible ? "hide" : "view";
 
-  const addLike = async (event) => {
+  const handleAddLike = (event) => {
     event.preventDefault();
 
-    const idx = blogs.indexOf(blog);
+    addLike(blog);
+  };
 
-    blogs[idx].likes += 1;
-    updateBlogs([...blogs]);
+  const handleDeleteBlog = (event) => {
+    event.preventDefault();
 
-    await blogService.update(blogs[idx]);
+    deleteBlog(blog);
   };
 
   const displayBlog = {
     display: user.username === blog.user.username ? "" : "none",
   };
-  const deleteBlog = async (event) => {
-    event.preventDefault();
 
-    window.confirm(`Remove blog ${blog.title} by ${blog.author}?`);
-
-    await blogService.deleteBlog(blog.id);
-
-    const idx = blogs.indexOf(blog);
-
-    blogs.splice(idx, 1);
-    updateBlogs([...blogs]);
-  };
-
-  return (
-    <div style={blogStyle}>
-      {blog.title} {blog.author}{" "}
-      <button onClick={() => setVisible(!visible)}>{buttonLabel}</button>
-      <div style={displayFull}>
-        <p>{blog.url}</p>
-        <p>
-          {blog.likes} <button onClick={addLike}>like</button>
-        </p>
-        <p>{blog.user.name}</p>
-        <button style={displayBlog} onClick={deleteBlog}>
-          remove
+  if (visible) {
+    return (
+      <div className="blog" style={blogStyle}>
+        <div className="blog__info">
+          {blog.title} {blog.author}{" "}
+        </div>
+        <button className="btn-visible" onClick={() => setVisible(!visible)}>
+          {buttonLabel}
+        </button>
+        <div>
+          <p className="blog__url">{blog.url}</p>
+          <p className="blog__likes">
+            {blog.likes}{" "}
+            <button className="btn-like" onClick={handleAddLike}>
+              like
+            </button>
+          </p>
+          <p className="blog__username">{blog.user.name}</p>
+          <button style={displayBlog} onClick={handleDeleteBlog}>
+            remove
+          </button>
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <div className="blog" style={blogStyle}>
+        <div className="blog__info">
+          {blog.title} {blog.author}{" "}
+        </div>
+        <button className="btn-visible" onClick={() => setVisible(!visible)}>
+          {buttonLabel}
         </button>
       </div>
-    </div>
-  );
+    );
+  }
 };
 
 Blog.displayName = "Blog";

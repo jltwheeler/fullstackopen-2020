@@ -87,6 +87,26 @@ const App = () => {
     }
   };
 
+  const deleteBlog = async (blog) => {
+    window.confirm(`Remove blog ${blog.title} by ${blog.author}?`);
+
+    await blogService.deleteBlog(blog.id);
+
+    const idx = blogs.indexOf(blog);
+
+    blogs.splice(idx, 1);
+    setBlogs([...blogs]);
+  };
+
+  const addLike = async (blog) => {
+    const idx = blogs.indexOf(blog);
+
+    blogs[idx].likes += 1;
+    setBlogs([...blogs]);
+
+    await blogService.update(blogs[idx]);
+  };
+
   const loginForm = () => {
     return (
       <Togglable buttonLabel="login">
@@ -121,9 +141,9 @@ const App = () => {
             <Blog
               key={blog.id}
               blog={blog}
-              blogs={blogs}
-              updateBlogs={setBlogs}
               user={user}
+              addLike={addLike}
+              deleteBlog={deleteBlog}
             />
           ))}
         </div>
