@@ -23,14 +23,12 @@ const Blog = ({ blog, blogs, updateBlogs, user }) => {
     blogs[idx].likes += 1;
     updateBlogs([...blogs]);
 
-    await blogService.update(blog.id, blogs[idx]);
+    await blogService.update(blogs[idx]);
   };
 
   const displayBlog = {
     display: user.username === blog.user.username ? "" : "none",
   };
-  console.log(user.username);
-  console.log(blog.user.username);
   const deleteBlog = async (event) => {
     event.preventDefault();
 
@@ -61,5 +59,7 @@ const Blog = ({ blog, blogs, updateBlogs, user }) => {
     </div>
   );
 };
+
+Blog.displayName = "Blog";
 
 export default Blog;

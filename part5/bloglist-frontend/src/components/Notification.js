@@ -30,4 +30,6 @@ const Notification = ({ alert }) => {
   }
 };
 
+Notification.displayname = "Notification";
+
 export default Notification;

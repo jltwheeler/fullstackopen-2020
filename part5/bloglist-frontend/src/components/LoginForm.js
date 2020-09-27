@@ -30,4 +30,6 @@ const LoginForm = ({
   </form>
 );
 
+LoginForm.displayName = "Login Form";
+
 export default LoginForm;

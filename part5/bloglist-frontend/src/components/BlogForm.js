@@ -46,4 +46,6 @@ const BlogForm = ({ createBlog }) => {
   );
 };
 
+BlogForm.displayName = "Blog Form";
+
 export default BlogForm;
