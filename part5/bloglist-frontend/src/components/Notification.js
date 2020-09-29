@@ -22,9 +22,17 @@ const Notification = ({ alert }) => {
   };
 
   if (alert.type === "error") {
-    return <div style={errorStyle}>{alert.message}</div>;
+    return (
+      <div className="error" style={errorStyle}>
+        {alert.message}
+      </div>
+    );
   } else if (alert.type === "success") {
-    return <div style={successStyle}>{alert.message}</div>;
+    return (
+      <div className="success" style={successStyle}>
+        {alert.message}
+      </div>
+    );
   } else {
     return null;
   }
