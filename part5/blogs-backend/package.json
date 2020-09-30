@@ -4,10 +4,11 @@
   "description": "Blog list application",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=production node index.js",
-    "dev": "NODE_ENV=development nodemon index.js",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
     "lint": "eslint .",
-    "test": "NODE_ENV=test jest --verbose --runInBand"
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
+    "start:test": "cross-env NODE_ENV=test node index.js"
   },
   "author": "Josh Wheeler",
   "license": "MIT",
@@ -22,6 +23,7 @@
     "mongoose-unique-validator": "^2.0.3"
   },
   "devDependencies": {
+    "cross-env": "^7.0.2",
     "eslint": "^7.8.1",
     "jest": "^26.4.2",
     "nodemon": "^2.0.4",
