@@ -1,43 +1,28 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { useDispatch } from "react-redux";
 
-import { createNewAnectode } from "../reducers/anecdoteReducer";
-import {
-  setNotification,
-  removeNotification,
-} from "../reducers/notificationReducer";
-import anectodeService from "./../services/anectodes";
+import { createNewAnecdote } from "../reducers/anecdoteReducer";
+import { setNotification } from "../reducers/notificationReducer";
 
-const AnectodeForm = () => {
+const AnecdoteForm = () => {
   const dispatch = useDispatch();
-  const notification = useSelector((state) => state.notification);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => dispatch(removeNotification()), 5000);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [dispatch, notification]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const content = event.target.newAnectode.value;
+    const content = event.target.newAnecdote.value;
 
-    const newAnectode = await anectodeService.createNew(content);
-
-    dispatch(createNewAnectode(newAnectode));
-    dispatch(setNotification(content));
+    dispatch(createNewAnecdote(content));
+    dispatch(setNotification(`Successfully added anecdote: ${content}`, 5));
   };
 
   return (
     <form onSubmit={(event) => handleSubmit(event)}>
       <div>
-        <input name="newAnectode" />
+        <input name="newAnecdote" />
       </div>
       <button type="submit">create</button>
     </form>
   );
 };
 
-export default AnectodeForm;
+export default AnecdoteForm;

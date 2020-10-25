@@ -1,13 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { voteForAnectode } from "../reducers/anecdoteReducer";
-import {
-  setNotification,
-  removeNotification,
-} from "../reducers/notificationReducer";
+import { voteForAnecdote } from "../reducers/anecdoteReducer";
+import { setNotification } from "../reducers/notificationReducer";
 
-const AnectodeList = () => {
+const AnecdoteList = () => {
   const anecdotes = useSelector((state) => {
     if (state.filter) {
       return state.anecdotes.filter((val) =>
@@ -18,22 +15,11 @@ const AnectodeList = () => {
     }
   });
 
-  const notification = useSelector((state) => state.notification);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      dispatch(removeNotification());
-    }, 5000);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [dispatch, notification]);
-
   const vote = ({ id, content }) => {
-    dispatch(voteForAnectode(id));
-    dispatch(setNotification(content));
+    dispatch(voteForAnecdote(id));
+    dispatch(setNotification(`You voted for: ${content}`, 2));
   };
 
   return (
@@ -51,4 +37,4 @@ const AnectodeList = () => {
   );
 };
 
-export default AnectodeList;
+export default AnecdoteList;

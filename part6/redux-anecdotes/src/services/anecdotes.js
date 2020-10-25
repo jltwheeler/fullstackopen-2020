@@ -19,4 +19,14 @@ const createNew = async (content) => {
   return response.data;
 };
 
-export default { getAll, createNew };
+const updateOne = async (id) => {
+  const url = `${baseUrl}/${id}`;
+  const response = await axios.get(url);
+  const anecdote = response.data;
+
+  const updatedAnecdote = { ...anecdote, votes: anecdote.votes + 1 };
+  const putResponse = await axios.put(url, updatedAnecdote);
+  return putResponse.data;
+};
+
+export default { getAll, createNew, updateOne };

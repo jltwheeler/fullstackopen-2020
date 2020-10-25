@@ -1,18 +1,27 @@
-export const voteForAnectode = (id) => {
-  return {
-    type: "VOTE",
-    data: id,
+import anecdoteService from "../services/anecdotes";
+
+export const voteForAnecdote = (id) => {
+  return async (dispatch) => {
+    await anecdoteService.updateOne(id);
+    const anecdotes = await anecdoteService.getAll();
+    dispatch({
+      type: "VOTE",
+      data: anecdotes,
+    });
   };
 };
 
-export const createNewAnectode = (anectode) => {
-  return {
-    type: "ADD_NEW",
-    data: anectode,
+export const createNewAnecdote = (content) => {
+  return async (dispatch) => {
+    const anecdote = await anecdoteService.createNew(content);
+    dispatch({
+      type: "ADD_NEW",
+      data: anecdote,
+    });
   };
 };
 
-const orderByVotes = (anectodes) => {
+const orderByVotes = (anecdotes) => {
   const compare = (a, b) => {
     if (a.votes < b.votes) {
       return 1;
@@ -23,34 +32,27 @@ const orderByVotes = (anectodes) => {
     return 0;
   };
 
-  return [...anectodes].sort(compare);
+  return [...anecdotes].sort(compare);
 };
 
-export const initialiseAnectodes = (anectodes) => {
-  return {
-    type: "INIT_STATE",
-    data: anectodes,
+export const initialiseAnecdotes = () => {
+  return async (dispatch) => {
+    const anecdotes = await anecdoteService.getAll();
+    dispatch({
+      type: "INIT_STATE",
+      data: anecdotes,
+    });
   };
 };
 
 const reducer = (state = [], action) => {
   switch (action.type) {
     case "VOTE":
-      const anectode = state.find((item) => item.id === action.data);
-      const idx = state.indexOf(anectode);
-
-      const updatedAnectode = { ...anectode, votes: anectode.votes + 1 };
-
-      return orderByVotes([
-        ...state.slice(0, idx),
-        updatedAnectode,
-        ...state.slice(idx + 1),
-      ]);
-
+      return orderByVotes(action.data);
     case "ADD_NEW":
       return [...state, action.data];
     case "INIT_STATE":
-      return action.data;
+      return orderByVotes(action.data);
     default:
       return state;
   }

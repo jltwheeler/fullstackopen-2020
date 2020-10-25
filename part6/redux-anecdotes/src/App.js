@@ -1,20 +1,17 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-import AnectodeForm from "./components/AnecdoteForm";
-import AnectodeList from "./components/AnectodeList";
+import AnecdoteForm from "./components/AnecdoteForm";
+import AnecdoteList from "./components/AnecdoteList";
 import Filter from "./components/Filter";
 import Notification from "./components/Notification";
-import { initialiseAnectodes } from "./reducers/anecdoteReducer";
-import anectodeService from "./services/anectodes";
+import { initialiseAnecdotes } from "./reducers/anecdoteReducer";
 
 const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    anectodeService.getAll().then((anectodes) => {
-      dispatch(initialiseAnectodes(anectodes));
-    });
+    dispatch(initialiseAnecdotes());
   }, [dispatch]);
 
   return (
@@ -22,9 +19,9 @@ const App = () => {
       <h2>Anecdotes</h2>
       <Notification />
       <Filter />
-      <AnectodeList />
+      <AnecdoteList />
       <h2>create new</h2>
-      <AnectodeForm />
+      <AnecdoteForm />
     </div>
   );
 };
