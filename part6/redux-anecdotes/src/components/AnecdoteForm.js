@@ -6,6 +6,7 @@ import {
   setNotification,
   removeNotification,
 } from "../reducers/notificationReducer";
+import anectodeService from "./../services/anectodes";
 
 const AnectodeForm = () => {
   const dispatch = useDispatch();
@@ -19,11 +20,13 @@ const AnectodeForm = () => {
     };
   }, [dispatch, notification]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const content = event.target.newAnectode.value;
 
-    dispatch(createNewAnectode(content));
+    const newAnectode = await anectodeService.createNew(content);
+
+    dispatch(createNewAnectode(newAnectode));
     dispatch(setNotification(content));
   };
 
