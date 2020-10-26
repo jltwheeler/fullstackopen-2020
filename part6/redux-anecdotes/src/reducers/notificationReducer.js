@@ -1,9 +1,17 @@
-const notificationReducer = (state = "", action) => {
+let notificationId = 0;
+
+const notificationReducer = (
+  state = { content: "", id: notificationId },
+  action
+) => {
   switch (action.type) {
     case "SET_NOTIFICATION":
-      return action.notification;
+      return { content: action.content, id: action.id };
     case "REMOVE_NOTIFICATION":
-      return "";
+      if (state.id === action.id) {
+        return { notification: "" };
+      }
+      return state;
     default:
       return state;
   }
@@ -11,20 +19,22 @@ const notificationReducer = (state = "", action) => {
 
 export const setNotification = (notification, timeoutSecs) => {
   return async (dispatch) => {
+    const id = notificationId++;
+    console.log(id);
     dispatch({
       type: "SET_NOTIFICATION",
-      notification,
+      content: notification,
+      id,
     });
 
-    console.log(timeoutSecs * 1000);
-
-    setTimeout(() => dispatch(removeNotification()), timeoutSecs * 1000);
+    setTimeout(() => dispatch(removeNotification(id)), timeoutSecs * 1000);
   };
 };
 
-export const removeNotification = () => {
+export const removeNotification = (id) => {
   return {
     type: "REMOVE_NOTIFICATION",
+    id,
   };
 };
 
