@@ -6,28 +6,31 @@ import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
+import {
+  initBlogs,
+  createBlog,
+  removeBlog,
+  likeBlog,
+} from "./reducers/blogReducer";
 import { setNotification } from "./reducers/notificationReducer";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  const dispatch = useDispatch();
+
+  const blogs = useSelector((state) => state.blogs);
+  const notification = useSelector((state) => state.notification);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
-  const dispatch = useDispatch();
-  const notification = useSelector((state) => state.notification);
-
   const blogFormRef = useRef();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const blogs = await blogService.getAll();
-      setBlogs(blogs);
-    };
-    fetchData();
-  }, []);
+    dispatch(initBlogs());
+  }, [dispatch]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
@@ -71,8 +74,7 @@ const App = () => {
 
   const addBlog = async (newBlog) => {
     try {
-      const createdBlog = await blogService.create(newBlog);
-      setBlogs(blogs.concat(createdBlog));
+      dispatch(createBlog(newBlog));
 
       dispatch(
         setNotification(
@@ -87,24 +89,14 @@ const App = () => {
     }
   };
 
-  const deleteBlog = async (blog) => {
+  const deleteBlog = (blog) => {
     window.confirm(`Remove blog ${blog.title} by ${blog.author}?`);
 
-    await blogService.deleteBlog(blog.id);
-
-    const idx = blogs.indexOf(blog);
-
-    blogs.splice(idx, 1);
-    setBlogs([...blogs]);
+    dispatch(removeBlog(blog));
   };
 
-  const addLike = async (blog) => {
-    const idx = blogs.indexOf(blog);
-
-    blogs[idx].likes += 1;
-    setBlogs([...blogs]);
-
-    await blogService.update(blogs[idx]);
+  const addLike = (blog) => {
+    dispatch(likeBlog(blog));
   };
 
   const loginForm = () => {
