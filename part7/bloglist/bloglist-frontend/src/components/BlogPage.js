@@ -41,6 +41,14 @@ const BlogPage = ({ user, addLike, deleteBlog }) => {
             </button>
           </p>
           <p className="blog__username">added by {blog.user.name}</p>
+
+          <h2>Comments</h2>
+          <ul>
+            {blog.comments.map((comment) => {
+              return <li>{comment.comment}</li>;
+            })}
+          </ul>
+
           <button style={displayBlog} onClick={handleDeleteBlog}>
             remove
           </button>
