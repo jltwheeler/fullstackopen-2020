@@ -3,10 +3,12 @@ import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 
 import blogReducer from "./reducers/blogReducer";
+import loggedInReducer from "./reducers/loggedInReducer";
 import notificationReducer from "./reducers/notificationReducer";
 
 const reducer = combineReducers({
   blogs: blogReducer,
+  user: loggedInReducer,
   notification: notificationReducer,
 });
 

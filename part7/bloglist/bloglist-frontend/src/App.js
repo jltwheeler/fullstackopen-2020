@@ -12,19 +12,22 @@ import {
   removeBlog,
   likeBlog,
 } from "./reducers/blogReducer";
+import {
+  loginNewUser,
+  loginRememberedUser,
+  logoutUser,
+} from "./reducers/loggedInReducer";
 import { setNotification } from "./reducers/notificationReducer";
-import blogService from "./services/blogs";
-import loginService from "./services/login";
 
 const App = () => {
   const dispatch = useDispatch();
 
   const blogs = useSelector((state) => state.blogs);
   const notification = useSelector((state) => state.notification);
+  const user = useSelector((state) => state.user);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
 
   const blogFormRef = useRef();
 
@@ -36,30 +39,20 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
 
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
+      dispatch(loginRememberedUser(JSON.parse(loggedUserJSON)));
     }
   }, []);
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
+      dispatch(loginNewUser(username, password));
 
-      window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
-
-      blogService.setToken(user.token);
-
-      setUser(user);
       setUsername("");
       setPassword("");
 
       dispatch(
-        setNotification(`Successfully logged in as ${user.name}`, "success")
+        setNotification(`Successfully logged in as ${username}`, "success")
       );
     } catch (exception) {
       dispatch(setNotification("wrong username or password", "error"));
@@ -69,7 +62,7 @@ const App = () => {
   const handleLogout = (event) => {
     event.preventDefault();
     window.localStorage.removeItem("loggedBlogAppUser");
-    setUser(null);
+    dispatch(logoutUser());
   };
 
   const addBlog = async (newBlog) => {
