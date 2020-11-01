@@ -1,18 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Link,
-  Switch,
-  Route,
-  useHistory,
-  useRouteMatch,
-} from "react-router-dom";
+import { Link, Switch, Redirect, Route } from "react-router-dom";
 
 import Blog from "./components/Blog";
 import BlogForm from "./components/BlogForm";
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
+import User from "./components/User";
 import Users from "./components/Users";
 import {
   initBlogs,
@@ -27,14 +22,10 @@ import {
 } from "./reducers/loggedInReducer";
 import { getUsers } from "./reducers/userReducer";
 import { setNotification } from "./reducers/notificationReducer";
+import blogService from "./services/blogs";
 
 const App = () => {
   const dispatch = useDispatch();
-
-  const blogs = useSelector((state) => state.blogs);
-  const notification = useSelector((state) => state.notification);
-  const user = useSelector((state) => state.loggedIn);
-  const users = useSelector((state) => state.users);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -47,12 +38,14 @@ const App = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
-
-    if (loggedUserJSON) {
-      dispatch(loginRememberedUser(JSON.parse(loggedUserJSON)));
+    if (user) {
+      blogService.setToken(user.token);
     }
-  }, [dispatch]);
+  }, []);
+
+  const blogs = useSelector((state) => state.blogs);
+  const notification = useSelector((state) => state.notification);
+  const user = useSelector((state) => state.loggedIn);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -95,7 +88,6 @@ const App = () => {
 
   const deleteBlog = (blog) => {
     window.confirm(`Remove blog ${blog.title} by ${blog.author}?`);
-
     dispatch(removeBlog(blog));
   };
 
@@ -123,27 +115,20 @@ const App = () => {
 
       <Notification alert={notification} />
 
+      {user && (
+        <div>
+          <p>{user.name} is logged-in</p>
+          <button onClick={handleLogout}>logout</button>
+        </div>
+      )}
+
       <Switch>
-        <Route path="/users">
-          {user === null ? (
-            loginForm()
-          ) : (
-            <div>
-              <p>{user.name} is logged-in</p>
-              <button onClick={handleLogout}>logout</button>
-
-              <Users users={users} />
-            </div>
-          )}
-        </Route>
+        <Route path="/users/:id">{user ? <User /> : <Redirect to="/" />}</Route>
+        <Route path="/users">{user ? <Users /> : <Redirect to="/" />}</Route>
         <Route path="/">
-          {user === null ? (
-            loginForm()
-          ) : (
+          {!user && loginForm()}
+          {user && (
             <div>
-              <p>{user.name} is logged-in</p>
-              <button onClick={handleLogout}>logout</button>
-
               <Togglable buttonLabel="new blog" ref={blogFormRef}>
                 <BlogForm createBlog={addBlog} />
               </Togglable>
