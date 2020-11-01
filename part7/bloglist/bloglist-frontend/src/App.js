@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Switch, Redirect, Route } from "react-router-dom";
+import { Container } from "@material-ui/core";
 
+import "./App.css";
 import Blog from "./components/Blog";
 import BlogForm from "./components/BlogForm";
 import BlogPage from "./components/BlogPage";
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
+import Navbar from "./components/Navbar";
 import Togglable from "./components/Togglable";
 import User from "./components/User";
 import Users from "./components/Users";
@@ -108,41 +111,51 @@ const App = () => {
 
   return (
     <div>
-      <h2>Blogs</h2>
+      <Navbar
+        user={user}
+        handleLogout={handleLogout}
+        handleLogin={handleLogin}
+      />
 
-      <Notification alert={notification} />
+      <Container>
+        <h2>Blogs</h2>
 
-      {user && (
-        <div>
-          <p>{user.name} is logged-in</p>
-          <button onClick={handleLogout}>logout</button>
-        </div>
-      )}
+        <Notification alert={notification} />
 
-      <Switch>
-        <Route path="/blogs/:id">
-          {user ? (
-            <BlogPage user={user} addLike={addLike} deleteBlog={deleteBlog} />
-          ) : (
-            <Redirect to="/" />
-          )}
-        </Route>
-        <Route path="/users/:id">{user ? <User /> : <Redirect to="/" />}</Route>
-        <Route path="/users">{user ? <Users /> : <Redirect to="/" />}</Route>
-        <Route path="/">
-          {!user && loginForm()}
-          {user && (
-            <div>
-              <Togglable buttonLabel="new blog" ref={blogFormRef}>
-                <BlogForm createBlog={addBlog} />
-              </Togglable>
-              {blogs.map((blog) => (
-                <Blog key={blog.id} blog={blog} />
-              ))}
-            </div>
-          )}
-        </Route>
-      </Switch>
+        {user && (
+          <div>
+            <p>{user.name} is logged-in</p>
+            <button onClick={handleLogout}>logout</button>
+          </div>
+        )}
+
+        <Switch>
+          <Route path="/blogs/:id">
+            {user ? (
+              <BlogPage user={user} addLike={addLike} deleteBlog={deleteBlog} />
+            ) : (
+              <Redirect to="/" />
+            )}
+          </Route>
+          <Route path="/users/:id">
+            {user ? <User /> : <Redirect to="/" />}
+          </Route>
+          <Route path="/users">{user ? <Users /> : <Redirect to="/" />}</Route>
+          <Route path="/">
+            {!user && loginForm()}
+            {user && (
+              <div>
+                <Togglable buttonLabel="new blog" ref={blogFormRef}>
+                  <BlogForm createBlog={addBlog} />
+                </Togglable>
+                {blogs.map((blog) => (
+                  <Blog key={blog.id} blog={blog} />
+                ))}
+              </div>
+            )}
+          </Route>
+        </Switch>
+      </Container>
     </div>
   );
 };
