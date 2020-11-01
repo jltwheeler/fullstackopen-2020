@@ -1,11 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  Link,
+  Switch,
+  Route,
+  useHistory,
+  useRouteMatch,
+} from "react-router-dom";
 
 import Blog from "./components/Blog";
+import BlogForm from "./components/BlogForm";
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
-import BlogForm from "./components/BlogForm";
+import Users from "./components/Users";
 import {
   initBlogs,
   createBlog,
@@ -17,6 +25,7 @@ import {
   loginRememberedUser,
   logoutUser,
 } from "./reducers/loggedInReducer";
+import { getUsers } from "./reducers/userReducer";
 import { setNotification } from "./reducers/notificationReducer";
 
 const App = () => {
@@ -24,7 +33,8 @@ const App = () => {
 
   const blogs = useSelector((state) => state.blogs);
   const notification = useSelector((state) => state.notification);
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.loggedIn);
+  const users = useSelector((state) => state.users);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -33,6 +43,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initBlogs());
+    dispatch(getUsers());
   }, [dispatch]);
 
   useEffect(() => {
@@ -41,7 +52,7 @@ const App = () => {
     if (loggedUserJSON) {
       dispatch(loginRememberedUser(JSON.parse(loggedUserJSON)));
     }
-  }, []);
+  }, [dispatch]);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -112,27 +123,43 @@ const App = () => {
 
       <Notification alert={notification} />
 
-      {user === null ? (
-        loginForm()
-      ) : (
-        <div>
-          <p>{user.name} is logged-in</p>
-          <button onClick={handleLogout}>logout</button>
+      <Switch>
+        <Route path="/users">
+          {user === null ? (
+            loginForm()
+          ) : (
+            <div>
+              <p>{user.name} is logged-in</p>
+              <button onClick={handleLogout}>logout</button>
 
-          <Togglable buttonLabel="new blog" ref={blogFormRef}>
-            <BlogForm createBlog={addBlog} />
-          </Togglable>
-          {blogs.map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              user={user}
-              addLike={addLike}
-              deleteBlog={deleteBlog}
-            />
-          ))}
-        </div>
-      )}
+              <Users users={users} />
+            </div>
+          )}
+        </Route>
+        <Route path="/">
+          {user === null ? (
+            loginForm()
+          ) : (
+            <div>
+              <p>{user.name} is logged-in</p>
+              <button onClick={handleLogout}>logout</button>
+
+              <Togglable buttonLabel="new blog" ref={blogFormRef}>
+                <BlogForm createBlog={addBlog} />
+              </Togglable>
+              {blogs.map((blog) => (
+                <Blog
+                  key={blog.id}
+                  blog={blog}
+                  user={user}
+                  addLike={addLike}
+                  deleteBlog={deleteBlog}
+                />
+              ))}
+            </div>
+          )}
+        </Route>
+      </Switch>
     </div>
   );
 };
