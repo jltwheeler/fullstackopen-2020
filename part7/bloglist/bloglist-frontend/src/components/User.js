@@ -7,8 +7,6 @@ const User = () => {
   const match = useRouteMatch("/users/:id");
   const user = match ? users.find((user) => user.id === match.params.id) : null;
 
-  console.log(users);
-
   if (user) {
     return (
       <div>

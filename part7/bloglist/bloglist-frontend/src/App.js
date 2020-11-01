@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Switch, Redirect, Route } from "react-router-dom";
+import { Switch, Redirect, Route } from "react-router-dom";
 
 import Blog from "./components/Blog";
 import BlogForm from "./components/BlogForm";
+import BlogPage from "./components/BlogPage";
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
@@ -15,11 +16,7 @@ import {
   removeBlog,
   likeBlog,
 } from "./reducers/blogReducer";
-import {
-  loginNewUser,
-  loginRememberedUser,
-  logoutUser,
-} from "./reducers/loggedInReducer";
+import { loginNewUser, logoutUser } from "./reducers/loggedInReducer";
 import { getUsers } from "./reducers/userReducer";
 import { setNotification } from "./reducers/notificationReducer";
 import blogService from "./services/blogs";
@@ -123,6 +120,13 @@ const App = () => {
       )}
 
       <Switch>
+        <Route path="/blogs/:id">
+          {user ? (
+            <BlogPage user={user} addLike={addLike} deleteBlog={deleteBlog} />
+          ) : (
+            <Redirect to="/" />
+          )}
+        </Route>
         <Route path="/users/:id">{user ? <User /> : <Redirect to="/" />}</Route>
         <Route path="/users">{user ? <Users /> : <Redirect to="/" />}</Route>
         <Route path="/">
@@ -133,13 +137,7 @@ const App = () => {
                 <BlogForm createBlog={addBlog} />
               </Togglable>
               {blogs.map((blog) => (
-                <Blog
-                  key={blog.id}
-                  blog={blog}
-                  user={user}
-                  addLike={addLike}
-                  deleteBlog={deleteBlog}
-                />
+                <Blog key={blog.id} blog={blog} />
               ))}
             </div>
           )}
