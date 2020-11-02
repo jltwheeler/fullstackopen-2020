@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { TableContainer, Table, TableBody } from "@material-ui/core";
 
 import Blog from "./Blog";
 import BlogForm from "./BlogForm";
@@ -65,9 +66,17 @@ const HomePage = () => {
           <Togglable buttonLabel="new blog" ref={blogFormRef}>
             <BlogForm createBlog={addBlog} />
           </Togglable>
-          {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
-          ))}
+          <div style={{ padding: "1rem 0" }}>
+            <TableContainer>
+              <Table>
+                <TableBody>
+                  {blogs.map((blog) => (
+                    <Blog key={blog.id} blog={blog} />
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
         </div>
       )}
     </div>

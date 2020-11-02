@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import { Button, TextField } from "@material-ui/core";
 
 import { createComment } from "./../reducers/blogReducer";
 
@@ -20,16 +21,24 @@ const CommentForm = ({ blogId }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input
-        value={comment}
-        type="text"
-        id="comment"
-        name="comment"
-        onChange={handleChange}
-      ></input>
-      <button id="btn-login" type="submit">
-        add comment
-      </button>
+      <div>
+        <TextField
+          label="comment"
+          id="comment"
+          name="comment"
+          value={comment}
+          onChange={handleChange}
+        />
+      </div>
+      <Button
+        id="btn-login"
+        type="submit"
+        size="small"
+        variant="contained"
+        color="primary"
+      >
+        Add comment
+      </Button>
     </form>
   );
 };

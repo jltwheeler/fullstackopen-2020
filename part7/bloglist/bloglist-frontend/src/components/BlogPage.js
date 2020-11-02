@@ -1,6 +1,17 @@
 import React from "react";
 import { Redirect, useRouteMatch } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  Button,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from "@material-ui/core";
+import CommentIcon from "@material-ui/icons/Comment";
+import ThumbsUpAlt from "@material-ui/icons/ThumbUpAlt";
 
 import CommentForm from "./CommentForm";
 import { likeBlog, removeBlog } from "./../reducers/blogReducer";
@@ -24,44 +35,75 @@ const BlogPage = () => {
     dispatch(removeBlog(blog));
   };
 
+  const renderRemoveBtn = () => {
+    if (user.username === blog.user.username) {
+      return (
+        <Button
+          id="btn-login"
+          type="submit"
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={handleDeleteBlog}
+        >
+          remove
+        </Button>
+      );
+    } else {
+      return null;
+    }
+  };
+
   if (!blog) {
     return null;
   } else {
     if (user) {
-      const displayBlog = {
-        display: user.username === blog.user.username ? "" : "none",
-      };
       return (
         <div>
-          <h1>{blog.title}</h1>
+          <Typography variant="h5">{blog.title}</Typography>
 
           <div>
             <p className="blog__url">
-              <a href={blog.url} target="_blank">
-                {blog.url}
-              </a>
+              <Typography variant="body1">
+                <a href={blog.url} target="_blank">
+                  {blog.url}
+                </a>
+              </Typography>
             </p>
             <p className="blog__likes">
-              {blog.likes} likes
-              <button className="btn-like" onClick={handleAddLike}>
-                like
-              </button>
+              <Typography variant="body1">{blog.likes} likes</Typography>
+              <IconButton
+                className="btn-like"
+                color="primary"
+                aria-label="like"
+                onClick={handleAddLike}
+              >
+                <ThumbsUpAlt />
+              </IconButton>
             </p>
-            <p className="blog__username">added by {blog.user.name}</p>
+            <Typography variant="body2" className="blog__username">
+              added by {blog.user.name}
+            </Typography>
+            <br />
 
-            <h2>Comments</h2>
+            <Typography variant="subtitle1">Comments</Typography>
 
             <CommentForm blogId={blog.id} />
 
-            <ul>
+            <List>
               {blog.comments.map((comment) => {
-                return <li key={comment.id}>{comment.comment}</li>;
+                return (
+                  <ListItem key={comment.id}>
+                    <ListItemIcon>
+                      <CommentIcon />
+                    </ListItemIcon>
+                    <ListItemText>{comment.comment}</ListItemText>
+                  </ListItem>
+                );
               })}
-            </ul>
+            </List>
 
-            <button style={displayBlog} onClick={handleDeleteBlog}>
-              remove
-            </button>
+            {renderRemoveBtn()}
           </div>
         </div>
       );

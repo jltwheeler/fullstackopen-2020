@@ -18,7 +18,7 @@ const Navbar = () => {
     <AppBar position="static">
       <Toolbar>
         <Button color="inherit" component={Link} to="/">
-          Home
+          Blogs
         </Button>
         <Button color="inherit" component={Link} to="/users">
           Users

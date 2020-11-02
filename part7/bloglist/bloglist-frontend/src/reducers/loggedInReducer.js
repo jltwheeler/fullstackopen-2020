@@ -35,6 +35,7 @@ export const loginNewUser = (username, password) => {
 };
 
 export const logoutUser = () => {
+  window.localStorage.removeItem("loggedBlogAppUser");
   return {
     type: "LOG_OUT",
   };

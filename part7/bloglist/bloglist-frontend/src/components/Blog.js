@@ -1,23 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { TableRow, TableCell } from "@material-ui/core";
 
 const Blog = ({ blog }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  };
-
   return (
-    <div className="blog" style={blogStyle}>
-      <div className="blog__info">
-        <Link to={`/blogs/${blog.id}`}>
-          {blog.title} {blog.author}
-        </Link>
-      </div>
-    </div>
+    <TableRow className="blog">
+      <TableCell className="blog__info">
+        <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+      </TableCell>
+      <TableCell>{blog.author}</TableCell>
+    </TableRow>
   );
 };
 

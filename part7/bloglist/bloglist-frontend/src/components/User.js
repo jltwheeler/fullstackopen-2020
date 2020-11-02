@@ -1,6 +1,14 @@
 import React from "react";
 import { Redirect, useRouteMatch } from "react-router-dom";
 import { useSelector } from "react-redux";
+import {
+  TableContainer,
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
+  Typography,
+} from "@material-ui/core";
 
 const User = () => {
   const users = useSelector((state) => state.users);
@@ -13,13 +21,22 @@ const User = () => {
     if (loggedIn) {
       return (
         <div>
-          <h2>{user.name}</h2>
-          <h3>Added Blogs</h3>
-          <ul>
-            {user.blogs.map((blog) => {
-              return <li key={blog.id}>{blog.title}</li>;
-            })}
-          </ul>
+          <Typography variant="h5">{user.name}</Typography>
+          <Typography variant="subtitle1">Added Blogs</Typography>
+
+          <TableContainer>
+            <Table>
+              <TableBody>
+                {user.blogs.map((blog) => {
+                  return (
+                    <TableRow key={blog.id}>
+                      <TableCell>{blog.title}</TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </div>
       );
     } else {
