@@ -1,23 +1,36 @@
 import loginService from "./../services/login";
 import blogService from "./../services/blogs";
+import { setNotification } from "./notificationReducer";
 
 const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
-const initialState = loggedUserJSON ? JSON.parse(loggedUserJSON) : null;
+const user = JSON.parse(loggedUserJSON);
+const initialState = loggedUserJSON ? user : null;
+if (user) {
+  blogService.setToken(user.token);
+}
 
 export const loginNewUser = (username, password) => {
   return async (dispatch) => {
-    const user = await loginService.login({
-      username,
-      password,
-    });
+    try {
+      const user = await loginService.login({
+        username,
+        password,
+      });
 
-    window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
-    blogService.setToken(user.token);
+      dispatch({
+        type: "LOG_IN",
+        data: user,
+      });
 
-    dispatch({
-      type: "LOG_IN",
-      data: user,
-    });
+      window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
+      blogService.setToken(user.token);
+
+      dispatch(
+        setNotification(`Successfully logged in as ${username}`, "success")
+      );
+    } catch (error) {
+      dispatch(setNotification("wrong username or password", "error"));
+    }
   };
 };
 

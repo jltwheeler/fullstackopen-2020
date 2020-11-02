@@ -10,7 +10,7 @@ const notificationReducer = (state = {}, action) => {
 };
 
 export const setNotification = (message, alertType) => {
-  return async (dispatch) => {
+  return (dispatch) => {
     dispatch({
       type: "SET_NOTIFICATION",
       message,

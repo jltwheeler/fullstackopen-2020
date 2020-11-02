@@ -1,6 +1,8 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
-const Notification = ({ alert }) => {
+const Notification = () => {
+  const notification = useSelector((state) => state.notification);
   const errorStyle = {
     color: "red",
     background: "lightgrey",
@@ -21,16 +23,16 @@ const Notification = ({ alert }) => {
     marginBottom: 10,
   };
 
-  if (alert.alertType === "error") {
+  if (notification.alertType === "error") {
     return (
       <div className="error" style={errorStyle}>
-        {alert.message}
+        {notification.message}
       </div>
     );
-  } else if (alert.alertType === "success") {
+  } else if (notification.alertType === "success") {
     return (
       <div className="success" style={successStyle}>
-        {alert.message}
+        {notification.message}
       </div>
     );
   } else {
