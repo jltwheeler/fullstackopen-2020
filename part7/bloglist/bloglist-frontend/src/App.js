@@ -13,12 +13,7 @@ import Navbar from "./components/Navbar";
 import Togglable from "./components/Togglable";
 import User from "./components/User";
 import Users from "./components/Users";
-import {
-  initBlogs,
-  createBlog,
-  removeBlog,
-  likeBlog,
-} from "./reducers/blogReducer";
+import { initBlogs, createBlog } from "./reducers/blogReducer";
 import { loginNewUser, logoutUser } from "./reducers/loggedInReducer";
 import { getUsers } from "./reducers/userReducer";
 import { setNotification } from "./reducers/notificationReducer";
@@ -50,7 +45,7 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      dispatch(loginNewUser(username, password));
+      await dispatch(loginNewUser(username, password));
 
       setUsername("");
       setPassword("");
@@ -71,7 +66,7 @@ const App = () => {
 
   const addBlog = async (newBlog) => {
     try {
-      dispatch(createBlog(newBlog));
+      await dispatch(createBlog(newBlog));
 
       dispatch(
         setNotification(
@@ -84,15 +79,6 @@ const App = () => {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const deleteBlog = (blog) => {
-    window.confirm(`Remove blog ${blog.title} by ${blog.author}?`);
-    dispatch(removeBlog(blog));
-  };
-
-  const addLike = (blog) => {
-    dispatch(likeBlog(blog));
   };
 
   const loginForm = () => {
@@ -111,11 +97,7 @@ const App = () => {
 
   return (
     <div>
-      <Navbar
-        user={user}
-        handleLogout={handleLogout}
-        handleLogin={handleLogin}
-      />
+      <Navbar user={user} handleLogout={handleLogout} />
 
       <Container>
         <h2>Blogs</h2>
@@ -131,11 +113,7 @@ const App = () => {
 
         <Switch>
           <Route path="/blogs/:id">
-            {user ? (
-              <BlogPage user={user} addLike={addLike} deleteBlog={deleteBlog} />
-            ) : (
-              <Redirect to="/" />
-            )}
+            {user ? <BlogPage user={user} /> : <Redirect to="/" />}
           </Route>
           <Route path="/users/:id">
             {user ? <User /> : <Redirect to="/" />}

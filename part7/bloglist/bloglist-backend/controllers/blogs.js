@@ -56,12 +56,11 @@ router.delete("/:id", async (request, response) => {
   response.status(204).end();
 });
 
-router.put("/", async (request, response) => {
-  const blog = request.body;
-  const userId = blog.user.id;
+router.put("/:id", async (request, response) => {
+  const updates = request.body;
+  const blog = await Blog.findById(request.params.id).populate("user");
 
-  blog.user = await User.findById(userId);
-  const updatedBlog = await Blog.findByIdAndUpdate(blog.id, blog, {
+  const updatedBlog = await Blog.findByIdAndUpdate(blog.id, updates, {
     new: true,
     runValidators: true,
   });

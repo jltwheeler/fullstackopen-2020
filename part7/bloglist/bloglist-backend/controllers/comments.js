@@ -7,7 +7,6 @@ const Comment = require("./../models/comment");
 const router = express.Router();
 
 router.get("/:id/comments", async (request, response) => {
-  console.log("hillo");
   const blog = await Blog.findById(request.params.id).populate("comments");
 
   response.json(blog);

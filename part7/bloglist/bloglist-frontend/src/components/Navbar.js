@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { AppBar, Toolbar, Button } from "@material-ui/core";
 
-const Navbar = ({ user, handleLogout, handleLogin }) => {
+const Navbar = ({ user, handleLogout }) => {
   return (
     <AppBar position="static">
       <Toolbar>

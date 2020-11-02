@@ -1,8 +1,12 @@
 import React from "react";
 import { useRouteMatch } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-const BlogPage = ({ user, addLike, deleteBlog }) => {
+import CommentForm from "./CommentForm";
+import { likeBlog, removeBlog } from "./../reducers/blogReducer";
+
+const BlogPage = ({ user }) => {
+  const dispatch = useDispatch();
   const match = useRouteMatch();
   const blogs = useSelector((state) => state.blogs);
 
@@ -10,12 +14,13 @@ const BlogPage = ({ user, addLike, deleteBlog }) => {
 
   const handleAddLike = (event) => {
     event.preventDefault();
-    addLike(blog);
+    dispatch(likeBlog(blog));
   };
 
   const handleDeleteBlog = (event) => {
     event.preventDefault();
-    deleteBlog(blog);
+    window.confirm(`Remove blog ${blog.title} by ${blog.author}?`);
+    dispatch(removeBlog(blog));
   };
 
   if (!blog) {
@@ -43,9 +48,12 @@ const BlogPage = ({ user, addLike, deleteBlog }) => {
           <p className="blog__username">added by {blog.user.name}</p>
 
           <h2>Comments</h2>
+
+          <CommentForm blogId={blog.id} />
+
           <ul>
             {blog.comments.map((comment) => {
-              return <li>{comment.comment}</li>;
+              return <li key={comment.id}>{comment.comment}</li>;
             })}
           </ul>
 
