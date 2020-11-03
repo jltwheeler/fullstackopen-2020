@@ -41,9 +41,13 @@ const calculateBMI = (height: number, weight: number): string => {
   }
 };
 
+export default calculateBMI;
+
 try {
   const { height, weight } = parseBMIArgs(process.argv);
   console.log(calculateBMI(height, weight));
 } catch (e) {
-  console.log("Error, something bad happened, message: ", e.message);
+  if (e instanceof Error) {
+    console.log("Error, something bad happened, message: ", e.message);
+  }
 }

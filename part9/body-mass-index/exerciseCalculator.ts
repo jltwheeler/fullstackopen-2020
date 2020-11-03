@@ -1,8 +1,9 @@
+type rating = 1 | 2 | 3;
 interface Result {
-  preiodLength: number;
+  periodLength: number;
   trainingDays: number;
   success: boolean;
-  rating: 1 | 2 | 3;
+  rating: rating;
   ratingDescription: string;
   target: number;
   average: number;
@@ -18,9 +19,7 @@ const parseExerciseArgs = (args: Array<string>): CalculateExercisesValues => {
 
   const validArray: boolean = args
     .slice(3)
-    .reduce((prev, curr) => !isNaN(Number(curr)), false);
-
-  console.log(validArray);
+    .reduce((_prev, curr) => !isNaN(Number(curr)), false);
 
   if (!isNaN(Number(args[2])) && validArray) {
     return {
@@ -35,7 +34,7 @@ const parseExerciseArgs = (args: Array<string>): CalculateExercisesValues => {
 const calculateExercises = (
   targetHours: number,
   dailyExerciseHours: Array<number>
-) => {
+): Result => {
   const periodLength: number = dailyExerciseHours.length;
   const trainingDays: number = dailyExerciseHours.reduce((prev, curr) => {
     if (curr > 0) {
@@ -48,7 +47,7 @@ const calculateExercises = (
 
   const success: boolean = average > targetHours ? true : false;
 
-  let rating: number;
+  let rating: rating;
   let ratingDescription: string;
   if (average / targetHours >= 2) {
     rating = 3;
@@ -76,5 +75,9 @@ try {
   const { targetHours, dailyExerciseHours } = parseExerciseArgs(process.argv);
   console.log(calculateExercises(targetHours, dailyExerciseHours));
 } catch (e) {
-  console.log("Error, something bad happened, message: ", e.message);
+  if (e instanceof Error) {
+    console.log("Error, something bad happened, message: ", e.message);
+  }
 }
+
+export default calculateExercises;
