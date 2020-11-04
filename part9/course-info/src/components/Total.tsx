@@ -1,9 +1,9 @@
 import React from "react";
 
-import { Course } from "./../types";
+import { CoursePart } from "./../types";
 
 interface TotalProps {
-  courses: Course[];
+  courses: CoursePart[];
 }
 
 const Total: React.FC<TotalProps> = ({ courses }) => {
