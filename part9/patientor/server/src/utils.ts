@@ -161,7 +161,6 @@ export const toNewEntry = (object: any): NewEntry => {
   };
 
   console.log();
-  console.log(baseEntry);
 
   switch (entryType) {
     case "HealthCheck":

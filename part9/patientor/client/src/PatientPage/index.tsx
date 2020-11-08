@@ -1,16 +1,42 @@
 import axios, { AxiosResponse } from "axios";
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Icon } from "semantic-ui-react";
+import { Button, Icon } from "semantic-ui-react";
 
+import { EntryFormValues } from "./AddEntryForm";
 import { apiBaseUrl } from "../constants";
-import { Entry, Patient } from "../types";
-import { useStateValue, setPatient } from "../state";
+import { Patient } from "../types";
+import { useStateValue, setPatient, addEntry } from "../state";
 import EntryDetails from "./EntryDetails";
+import AddEntryModal from "./AddEntryModal";
 
 const PatientPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [{ patient }, dispatch] = useStateValue();
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<string | undefined>();
+
+  const openModal = (): void => setModalOpen(true);
+
+  const closeModal = (): void => {
+    setModalOpen(false);
+    setError(undefined);
+  };
+
+  const submitNewEntry = async (values: EntryFormValues) => {
+    const newValues = { ...values, type: "Hospital" };
+    try {
+      const { data: newPatient } = await axios.post<Patient>(
+        `${apiBaseUrl}/patients/${id}/entries`,
+        newValues
+      );
+      dispatch(addEntry(newPatient));
+      closeModal();
+    } catch (e) {
+      console.error(e.response.data);
+      setError(e.response.data.error);
+    }
+  };
 
   useEffect(() => {
     const fetchPatienDetails = async () => {
@@ -57,6 +83,14 @@ const PatientPage: React.FC = () => {
             <EntryDetails key={entry.id} entry={entry} />
           ))}
         </div>
+        <AddEntryModal
+          modalOpen={modalOpen}
+          onSubmit={submitNewEntry}
+          error={error}
+          onClose={closeModal}
+        />
+        <br />
+        <Button onClick={() => openModal()}>Add New Entry</Button>
       </div>
     );
   } else {
