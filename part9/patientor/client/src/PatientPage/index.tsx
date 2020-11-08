@@ -4,8 +4,9 @@ import { useParams } from "react-router-dom";
 import { Icon } from "semantic-ui-react";
 
 import { apiBaseUrl } from "../constants";
-import { Patient } from "../types";
+import { Entry, Patient } from "../types";
 import { useStateValue, setPatient } from "../state";
+import EntryDetails from "./EntryDetails";
 
 const PatientPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -49,6 +50,13 @@ const PatientPage: React.FC = () => {
         </h1>
         <div>ssn: {patient?.ssn}</div>
         <div>occupation: {patient.occupation}</div>
+        <br />
+        <div>
+          <h3>Entries</h3>
+          {patient.entries?.map((entry) => (
+            <EntryDetails key={entry.id} entry={entry} />
+          ))}
+        </div>
       </div>
     );
   } else {
