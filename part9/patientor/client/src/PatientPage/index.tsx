@@ -5,7 +5,7 @@ import { Button, Icon } from "semantic-ui-react";
 
 import { EntryFormValues } from "./AddEntryForm";
 import { apiBaseUrl } from "../constants";
-import { Patient } from "../types";
+import { EntryTypes, Patient } from "../types";
 import { useStateValue, setPatient, addEntry } from "../state";
 import EntryDetails from "./EntryDetails";
 import AddEntryModal from "./AddEntryModal";
@@ -13,22 +13,26 @@ import AddEntryModal from "./AddEntryModal";
 const PatientPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [{ patient }, dispatch] = useStateValue();
-  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [entryType, setEntryType] = useState<EntryTypes>(
+    EntryTypes.HealthCheck
+  );
   const [error, setError] = React.useState<string | undefined>();
 
-  const openModal = (): void => setModalOpen(true);
-
+  const openModal = (type: EntryTypes): void => {
+    setEntryType(type);
+    setModalOpen(true);
+  };
   const closeModal = (): void => {
     setModalOpen(false);
     setError(undefined);
   };
 
   const submitNewEntry = async (values: EntryFormValues) => {
-    const newValues = { ...values, type: "Hospital" };
     try {
       const { data: newPatient } = await axios.post<Patient>(
         `${apiBaseUrl}/patients/${id}/entries`,
-        newValues
+        values
       );
       dispatch(addEntry(newPatient));
       closeModal();
@@ -85,12 +89,21 @@ const PatientPage: React.FC = () => {
         </div>
         <AddEntryModal
           modalOpen={modalOpen}
+          entryType={entryType}
           onSubmit={submitNewEntry}
           error={error}
           onClose={closeModal}
         />
         <br />
-        <Button onClick={() => openModal()}>Add New Entry</Button>
+        <Button onClick={() => openModal(EntryTypes.Hospital)}>
+          Add New Hospital Entry
+        </Button>
+        <Button onClick={() => openModal(EntryTypes.OccupationalHealth)}>
+          Add New Occupational Healthcare Entry
+        </Button>
+        <Button onClick={() => openModal(EntryTypes.HealthCheck)}>
+          Add New Health Check Entry
+        </Button>
       </div>
     );
   } else {

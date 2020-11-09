@@ -20,6 +20,8 @@ router.get("/:id", (req, res) => {
 
 router.post("/:id/entries", (req, res) => {
   const patient = patientService.findById(req.params.id);
+  console.log("New patient endpoint");
+  console.log();
 
   if (patient) {
     try {

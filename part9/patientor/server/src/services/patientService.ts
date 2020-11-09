@@ -45,7 +45,7 @@ const createEntry = (patient: Patient, entry: NewEntry): Patient => {
   };
   const idx = patients.indexOf(patient);
   patients[idx].entries.push(newEntry);
-  return { ...patient, entries: patient.entries.concat(newEntry) };
+  return { ...patient };
 };
 
 export default {

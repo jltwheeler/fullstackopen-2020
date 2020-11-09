@@ -24,18 +24,24 @@ export enum HealthCheckRating {
   "CriticalRisk" = 3,
 }
 
+export enum EntryTypes {
+  HealthCheck = "HealthCheck",
+  Hospital = "Hospital",
+  OccupationalHealth = "OccupationalHealthcare",
+}
+
 export interface HealthCheckEntry extends BaseEntry {
-  type: "HealthCheck";
+  type: EntryTypes.HealthCheck;
   healthCheckRating: HealthCheckRating;
 }
 
 export interface HospitalEntry extends BaseEntry {
-  type: "Hospital";
+  type: EntryTypes.Hospital;
   discharge: { date: string; criteria: string };
 }
 
 export interface OccupationalHealthcareEntry extends BaseEntry {
-  type: "OccupationalHealthcare";
+  type: EntryTypes.OccupationalHealth;
   employerName: string;
   sickLeave?: { startDate: string; endDate: string };
 }
@@ -49,7 +55,6 @@ export type NewEntry =
   | Omit<HospitalEntry, "id">
   | Omit<OccupationalHealthcareEntry, "id">
   | Omit<HealthCheckEntry, "id">;
-
 export interface Patient {
   id: string;
   name: string;
