@@ -55,7 +55,7 @@ module.exports = {
         });
       }
 
-      return book;
+      return book.populate("author").execPopulate();
     },
     editAuthor: async (root, args, context) => {
       const currentUser = context.currentUser;

@@ -5,15 +5,25 @@ import { ALL_BOOKS, CREATE_BOOK } from "../queries";
 
 const NewBook = ({ show, setError }) => {
   const [title, setTitle] = useState("");
-  const [author, setAuhtor] = useState("");
+  const [author, setAuthor] = useState("");
   const [published, setPublished] = useState("");
   const [genre, setGenre] = useState("");
   const [genres, setGenres] = useState([]);
 
   const [createBook] = useMutation(CREATE_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }],
     onError: (error) => {
+      console.log(error);
       setError(error.graphQLErrors[0].message);
+    },
+    update: (store, response) => {
+      const dataInStore = store.readQuery({ query: ALL_BOOKS });
+      store.writeQuery({
+        query: ALL_BOOKS,
+        data: {
+          ...dataInStore,
+          allBooks: [...dataInStore.allBooks, response.data.addBook],
+        },
+      });
     },
   });
 
@@ -28,7 +38,7 @@ const NewBook = ({ show, setError }) => {
 
     setTitle("");
     setPublished("");
-    setAuhtor("");
+    setAuthor("");
     setGenres([]);
     setGenre("");
   };
@@ -52,7 +62,7 @@ const NewBook = ({ show, setError }) => {
           author
           <input
             value={author}
-            onChange={({ target }) => setAuhtor(target.value)}
+            onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
         <div>
