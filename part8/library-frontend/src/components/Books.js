@@ -1,27 +1,35 @@
 import React, { useState, useEffect } from "react";
-import { useQuery } from "@apollo/client";
+import { useQuery, useLazyQuery } from "@apollo/client";
 
 import { ALL_BOOKS, GET_ME } from "../queries";
 
 const Books = (props) => {
-  const result = useQuery(ALL_BOOKS);
+  const [getBooks, resultBooks] = useLazyQuery(ALL_BOOKS);
   const resultUser = useQuery(GET_ME);
-  const [filter, setFilter] = useState("");
+  const result = useQuery(ALL_BOOKS);
+  const [books, setBooks] = useState([]);
 
   useEffect(() => {
     if (!resultUser.loading) {
       const favoriteGenre = resultUser.data.me.favoriteGenre;
+
       if (favoriteGenre) {
-        setFilter(favoriteGenre);
+        getBooks({ variables: { genre: favoriteGenre } });
       }
     }
   }, [resultUser.loading]);
 
-  if (!props.show) {
-    return null;
-  }
+  useEffect(() => {
+    getBooks();
+  }, []);
 
-  if (result.loading || resultUser.loading) {
+  useEffect(() => {
+    if (resultBooks.data) {
+      setBooks(resultBooks.data.allBooks);
+    }
+  }, [resultBooks]);
+
+  if (result.loading) {
     return (
       <div>
         <h2>books</h2>
@@ -30,8 +38,7 @@ const Books = (props) => {
     );
   }
 
-  const books = result.data.allBooks;
-  const genres = books.reduce(
+  const genres = result.data.allBooks.reduce(
     (prev, curr) => {
       const newGenres = curr.genres.filter((v) => !prev.includes(v));
       if (newGenres) {
@@ -44,11 +51,15 @@ const Books = (props) => {
   const handleClick = (event) => {
     event.preventDefault();
     if (event.target.value === "all") {
-      setFilter("");
+      getBooks();
     } else {
-      setFilter(event.target.value);
+      getBooks({ variables: { genre: event.target.value } });
     }
   };
+
+  if (!props.show) {
+    return null;
+  }
 
   return (
     <div>
@@ -61,15 +72,13 @@ const Books = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {books
-            .filter((v) => v.genres.includes(filter) || filter === "")
-            .map((v) => (
-              <tr key={v.title}>
-                <td>{v.title}</td>
-                <td>{v.author.name}</td>
-                <td>{v.published}</td>
-              </tr>
-            ))}
+          {books.map((v) => (
+            <tr key={v.title}>
+              <td>{v.title}</td>
+              <td>{v.author.name}</td>
+              <td>{v.published}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
       <div>
