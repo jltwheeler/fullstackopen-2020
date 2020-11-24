@@ -49,7 +49,6 @@ const Books = (props) => {
   );
 
   const handleClick = (event) => {
-    event.preventDefault();
     if (event.target.value === "all") {
       getBooks();
     } else {
