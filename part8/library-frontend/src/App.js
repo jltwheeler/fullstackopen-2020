@@ -8,7 +8,7 @@ import Notify from "./components/Notify";
 import LoginForm from "./components/LoginForm";
 
 const App = () => {
-  const [page, setPage] = useState("books");
+  const [page, setPage] = useState("authors");
 
   const [token, setToken] = useState(
     localStorage.getItem("library-user-token")

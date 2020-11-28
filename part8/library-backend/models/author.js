@@ -7,9 +7,13 @@ const schema = new mongoose.Schema({
     unique: true,
     minlength: 4,
   },
-  born: {
-    type: Number,
-  },
+  born: { type: Number },
+  books: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Book",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Author", schema);

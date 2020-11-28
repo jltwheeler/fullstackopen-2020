@@ -5,7 +5,7 @@ import AuthorForm from "./AuthorForm";
 import { ALL_AUTHORS } from "../queries";
 
 const Authors = ({ setError, show }) => {
-  const result = useQuery(ALL_AUTHORS);
+  const result = useQuery(ALL_AUTHORS, { pollInterval: 1000 });
 
   if (!show) {
     return null;
@@ -21,6 +21,7 @@ const Authors = ({ setError, show }) => {
   }
 
   const authors = result.data.allAuthors;
+  console.log(authors);
 
   return (
     <div>

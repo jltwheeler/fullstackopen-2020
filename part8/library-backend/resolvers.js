@@ -5,6 +5,7 @@ const Author = require("./models/author");
 const Book = require("./models/book");
 const User = require("./models/user");
 const { JWT_SECRET } = require("./constants");
+const author = require("./models/author");
 
 const pubsub = new PubSub();
 
@@ -27,8 +28,17 @@ module.exports = {
 
       return Book.find({}).populate("author");
     },
-    allAuthors: () => {
-      return Author.find({});
+    allAuthors: async () => {
+      let authors = await Author.find({}).populate("books");
+      authors = authors.map((author) => {
+        return {
+          name: author.name,
+          id: author._id,
+          born: author.born,
+          bookCount: author.books.length,
+        };
+      });
+      return authors;
     },
     me: (root, args, context) => {
       return context.currentUser;
@@ -58,6 +68,14 @@ module.exports = {
           invalidArgs: args,
         });
       }
+
+      if (author.books) {
+        author.books = author.books.concat(book._id);
+      } else {
+        author.books = [book._id];
+      }
+
+      await author.save();
 
       pubsub.publish("BOOK_ADDED", {
         bookAdded: book.populate("author").execPopulate(),

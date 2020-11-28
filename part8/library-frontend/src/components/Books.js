@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useQuery, useLazyQuery, useSubscription } from "@apollo/client";
+import {
+  useQuery,
+  useLazyQuery,
+  useSubscription,
+  useApolloClient,
+} from "@apollo/client";
 
 import { ALL_BOOKS, BOOK_ADDED, GET_ME } from "../queries";
 
@@ -9,9 +14,11 @@ const Books = (props) => {
   const result = useQuery(ALL_BOOKS);
   const [books, setBooks] = useState([]);
 
+  const client = useApolloClient();
+
   useEffect(() => {
     if (!resultUser.loading) {
-      const favoriteGenre = resultUser.data.me.favoriteGenre;
+      const favoriteGenre = resultUser.data.me?.favoriteGenre;
 
       if (favoriteGenre) {
         getBooks({ variables: { genre: favoriteGenre } });
@@ -29,10 +36,26 @@ const Books = (props) => {
     }
   }, [resultBooks]);
 
+  const updateCacheWith = (addedBook) => {
+    const includedIn = (set, object) => {
+      set.map((p) => p.id).includes(object.id);
+    };
+
+    const dataInStore = client.readQuery({ query: ALL_BOOKS });
+
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: { allBooks: dataInStore.allBooks.concat(addedBook) },
+      });
+    }
+  };
+
   useSubscription(BOOK_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
       const newBook = subscriptionData.data.bookAdded;
       window.alert(`A new book ${newBook.title} has been added!`);
+      updateCacheWith(newBook);
     },
   });
 
