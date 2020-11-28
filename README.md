@@ -20,7 +20,7 @@ table below.
 | 4     | [Testing Express servers, user administration](https://fullstackopen.com/en/part4)                 | 8.00  | 20 Sep 2020    |
 | 5     | [Testing React apps](https://fullstackopen.com/en/part5)                                           | 10.00 | 30 Sep 2020    |
 | 6     | [State management with Redux](https://fullstackopen.com/en/part6)                                  | 8.00  | 26 Oct 2020    |
-| 7     | [React router, custom hooks, styling app with CSS and webpack](https://fullstackopen.com/en/part7) | 15.50 | 02 Nov 2020    |
+| 7     | [React router, custom hooks, styling app with CSS and webpack](https://fullstackopen.com/en/part7) | 16.00 | 02 Nov 2020    |
 | 8     | [GraphQL](https://fullstackopen.com/en/part8)                                                      | 14.50 | 28 Nov 2020    |
 | 9     | [Typescript](https://fullstackopen.com/en/part9)                                                   | 21.25 | 09 Nov 2020    |
 | Total |                                                                                                    |       | 95             |
