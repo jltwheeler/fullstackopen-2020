@@ -23,4 +23,4 @@ table below.
 | 7     | [React router, custom hooks, styling app with CSS and webpack](https://fullstackopen.com/en/part7) | 16.00 | 02 Nov 2020    |
 | 8     | [GraphQL](https://fullstackopen.com/en/part8)                                                      | 14.50 | 28 Nov 2020    |
 | 9     | [Typescript](https://fullstackopen.com/en/part9)                                                   | 21.25 | 09 Nov 2020    |
-| Total |                                                                                                    |       | 95             |
+| Total |                                                                                                    |       | 95.5             |
