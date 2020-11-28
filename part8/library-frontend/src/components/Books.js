@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useQuery, useLazyQuery } from "@apollo/client";
+import { useQuery, useLazyQuery, useSubscription } from "@apollo/client";
 
-import { ALL_BOOKS, GET_ME } from "../queries";
+import { ALL_BOOKS, BOOK_ADDED, GET_ME } from "../queries";
 
 const Books = (props) => {
   const [getBooks, resultBooks] = useLazyQuery(ALL_BOOKS);
@@ -28,6 +28,13 @@ const Books = (props) => {
       setBooks(resultBooks.data.allBooks);
     }
   }, [resultBooks]);
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const newBook = subscriptionData.data.bookAdded;
+      window.alert(`A new book ${newBook.title} has been added!`);
+    },
+  });
 
   if (result.loading) {
     return (

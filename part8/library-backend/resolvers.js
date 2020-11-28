@@ -1,10 +1,12 @@
-const { UserInputError } = require("apollo-server");
+const { PubSub, UserInputError } = require("apollo-server");
 const jwt = require("jsonwebtoken");
 
 const Author = require("./models/author");
 const Book = require("./models/book");
 const User = require("./models/user");
 const { JWT_SECRET } = require("./constants");
+
+const pubsub = new PubSub();
 
 module.exports = {
   Query: {
@@ -57,6 +59,10 @@ module.exports = {
         });
       }
 
+      pubsub.publish("BOOK_ADDED", {
+        bookAdded: book.populate("author").execPopulate(),
+      });
+
       return book.populate("author").execPopulate();
     },
     editAuthor: async (root, args, context) => {
@@ -93,6 +99,11 @@ module.exports = {
       };
 
       return { value: jwt.sign(userForToken, JWT_SECRET) };
+    },
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(["BOOK_ADDED"]),
     },
   },
 };
